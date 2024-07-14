@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import ThemeToggle from '../ThemeToggle';
 import { useMeQuery } from '../../api/auth';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import RoomEzyLogo from '../../assets/room-ezy.svg';
 import HeaderProfilePopoverContent from './HeaderProfilePopoverContent';
 
 interface User {
@@ -34,7 +33,7 @@ const Header = () => {
             to="/"
             className="text-lg font-semibold text-primary flex gap-2 items-center"
           >
-            <img src={RoomEzyLogo} alt="RoomEzy Logo" className="w-8 h-8" />
+            <img src="/logo.svg" alt="RoomEzy Logo" className="w-8 h-8" />
             RoomEzy
           </Link>
         </div>

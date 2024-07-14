@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { selectHomeHistory, setHomeHistory } from '../store/slices/history';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import Blocks from '../components/common/Blocks';
 import Buildings from '../components/common/Buildings';
 import Floors from '../components/common/Floors';
 import FloorPreview from '../components/home/FloorPreview';
-import Header from '../components/home/Header';
+import LoadingHeader from '../components/LoadingHeader';
+
+const Header = lazy(() => import('../components/home/Header'));
 
 interface Building {
   _id: string;
@@ -42,7 +44,9 @@ const Home = () => {
 
   return (
     <>
-      <Header />
+      <Suspense fallback={<LoadingHeader />}>
+        <Header />
+      </Suspense>
       <div className="p-4 flex flex-col gap-4">
         <Buildings
           selectedBuilding={selectedBuilding}

@@ -1,8 +1,7 @@
-import { StrictMode } from 'react';
+import { StrictMode, lazy, Suspense } from 'react';
 import * as ReactDOM from 'react-dom/client';
 
 import { BrowserRouter as Router } from 'react-router-dom';
-import IndexRouter from './routes';
 
 import { Provider as ReduxProvider } from 'react-redux';
 import store from './store';
@@ -10,6 +9,9 @@ import { Toaster } from './components/ui/sonner';
 
 import { ThemeProvider } from './providers/ThemeProvider';
 import AuthProvider from './providers/AuthProvider';
+import LoadingPage from './pages/Loading';
+
+const IndexRouter = lazy(() => import('./routes/index'));
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -20,7 +22,9 @@ root.render(
       <ThemeProvider defaultTheme="light" storageKey="room-ezy-ui-theme">
         <Router>
           <AuthProvider>
-            <IndexRouter />
+            <Suspense fallback={<LoadingPage />}>
+              <IndexRouter />
+            </Suspense>
           </AuthProvider>
         </Router>
         <Toaster />

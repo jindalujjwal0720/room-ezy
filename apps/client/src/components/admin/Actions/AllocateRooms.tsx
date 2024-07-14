@@ -71,7 +71,7 @@ const AllocateRooms = ({ building }: AllocateRoomProps) => {
               <ul className="list-disc pl-8">
                 <li>Allocate rooms to all the students</li>
                 <li>
-                  <span className="text-red-500">Overwrite</span> any existing
+                  <span className="text-red-600">Overwrite</span> any existing
                   allotments
                 </li>
                 <li>Lock the allotments for the students in this building</li>
@@ -90,7 +90,7 @@ const AllocateRooms = ({ building }: AllocateRoomProps) => {
         </AlertDialogContent>
       </AlertDialog>
       <p className="text-xs text-muted-foreground">
-        <strong className="text-destructive">Irreversible Warning:</strong>{' '}
+        <strong className="text-red-600">Irreversible Warning:</strong>{' '}
         Allocate rooms to all the students in this building.{' '}
         <strong> This will overwrite any existing allotments.</strong>
       </p>

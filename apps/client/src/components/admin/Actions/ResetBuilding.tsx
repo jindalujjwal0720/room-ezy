@@ -52,7 +52,7 @@ const ResetBuilding = ({ building }: ResetBuildingProps) => {
       <AlertDialog open={openResetAlert} onOpenChange={setOpenResetAlert}>
         <AlertDialogTrigger asChild>
           <Button
-            className="w-full hover:bg-destructive text-destructive hover:text-destructive-foreground"
+            className="w-full hover:bg-red-600 hover:text-white transition-none"
             size="sm"
             variant="outline"
             disabled={resetBuildingLoading}
@@ -74,7 +74,7 @@ const ResetBuilding = ({ building }: ResetBuildingProps) => {
                 <li>Remove all the student wants</li>
                 <li>Remove all the predicted allotments</li>
                 <li>
-                  <span className="text-red-500">Not remove</span> the
+                  <span className="text-red-600">Not remove</span> the
                   allotments for the students in this building
                 </li>
               </ul>
@@ -89,8 +89,8 @@ const ResetBuilding = ({ building }: ResetBuildingProps) => {
         </AlertDialogContent>
       </AlertDialog>
       <p className="text-xs text-muted-foreground">
-        <strong className="text-destructive">Irreversible Warning:</strong>{' '}
-        Reset all the students data for the building.
+        <strong className="text-red-600">Irreversible Warning:</strong> Reset
+        all the students data for the building.
       </p>
     </div>
   );

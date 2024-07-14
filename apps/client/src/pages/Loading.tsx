@@ -1,7 +1,7 @@
 /// <reference types="vite-plugin-svgr/client" />
 import { cn } from '../lib/utils';
 import HintBoxArrow from '../assets/hint-box-arrow.svg?react';
-import RoomEzyLogo from '../assets/room-ezy.svg';
+import Loading from '../components/Loading';
 
 const ProfileHintBox = () => {
   return (
@@ -42,7 +42,7 @@ const hints = [
   { key: 'building', hintBox: BuildingSelectHintBox },
 ];
 
-const Loading = () => {
+const LoadingPage = () => {
   const hintIndex = Math.floor(Math.random() * hints.length);
   const hintKey = hints[hintIndex].key;
   const HintBox = hints[hintIndex].hintBox;
@@ -52,7 +52,7 @@ const Loading = () => {
       <div className="sticky top-0 z-10 backdrop-blur-md bg-muted/10 border-b border-muted">
         <div className="flex items-center justify-between px-6 py-2">
           <div className="text-lg font-semibold text-primary flex gap-2 items-center">
-            <img src={RoomEzyLogo} alt="RoomEzy Logo" className="w-8 h-8" />
+            <img src="/logo.svg" alt="RoomEzy Logo" className="w-8 h-8" />
             RoomEzy
           </div>
           <div className="flex items-center justify-end gap-4">
@@ -110,18 +110,11 @@ const Loading = () => {
           ))}
         </div>
         <div className="flex-1 flex flex-col items-center justify-center">
-          <img
-            src={RoomEzyLogo}
-            alt="RoomEzy Logo"
-            className="w-16 h-16 animate-bounce"
-          />
-          <div className="text-lg font-semibold text-muted-foreground mt-4">
-            Loading...
-          </div>
+          <Loading size="lg" />
         </div>
       </div>
     </div>
   );
 };
 
-export default Loading;
+export default LoadingPage;

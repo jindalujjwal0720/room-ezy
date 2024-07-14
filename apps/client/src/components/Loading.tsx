@@ -1,4 +1,3 @@
-import RoomEzyLogo from '../assets/room-ezy.svg';
 import { cn } from '../lib/utils';
 
 interface LoadingProps {
@@ -6,13 +5,15 @@ interface LoadingProps {
   fullScreen?: boolean;
   size?: 'sm' | 'md' | 'lg';
   text?: boolean;
+  full?: boolean;
 }
 
 const Loading = ({
-  show = false,
+  show = true,
   fullScreen = false,
   size = 'md',
   text = true,
+  full = false,
 }: LoadingProps) => {
   if (!show) return null;
 
@@ -21,11 +22,12 @@ const Loading = ({
       className={cn(
         'flex-1 flex flex-col items-center justify-center mt-4',
         fullScreen &&
-          'h-dvh w-dvw fixed top-0 left-0 backdrop-blur-sm z-10 pointer-events-none'
+          'h-dvh w-dvw fixed top-0 left-0 backdrop-blur-sm z-10 pointer-events-none',
+        full && 'h-full w-full flex-1 z-10 pointer-events-none'
       )}
     >
       <img
-        src={RoomEzyLogo}
+        src="/logo.svg"
         alt="RoomEzy Logo"
         className={cn(
           'animate-bounce',

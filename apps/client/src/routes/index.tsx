@@ -1,11 +1,14 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AuthRoutes from './authRoutes';
 import RequireLoggedIn from './custom/RequireLoggedIn';
 import RequireUpdatedUser from './custom/RequireUpdatedUser';
 import UpdateUser from '../pages/auth/UpdateUser';
-import Home from '../pages/Home';
 import RequireAdmin from './custom/RequireAdmin';
-import Admin from '../pages/Admin';
+import LoadingPage from '../pages/Loading';
+
+const Home = lazy(() => import('../pages/Home'));
+const Admin = lazy(() => import('../pages/Admin'));
 
 const IndexRouter = () => {
   return (
@@ -17,10 +20,24 @@ const IndexRouter = () => {
         <Route path="*" element={<RequireUpdatedUser />}>
           <Route path="admin/*" element={<RequireAdmin />}>
             {/* All admin routes here */}
-            <Route path="*" element={<Admin />} />
+            <Route
+              path="*"
+              element={
+                <Suspense fallback={<LoadingPage />}>
+                  <Admin />
+                </Suspense>
+              }
+            />
           </Route>
           {/* All routes here */}
-          <Route path="*" element={<Home />} />
+          <Route
+            path="*"
+            element={
+              <Suspense fallback={<LoadingPage />}>
+                <Home />
+              </Suspense>
+            }
+          />
         </Route>
       </Route>
     </Routes>

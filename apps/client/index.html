@@ -1,16 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>RoomEzy</title>
-    <base href="/" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="/src/styles.css" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <title>RoomEzy</title>
+  <base href="/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/src/styles.css" />
+
+  <style>
+    .loading {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      height: 100dvh;
+      width: 100dvw;
+    }
+
+    .loading img {
+      width: 40px;
+      height: 40px;
+      animation: bounce 1s infinite;
+    }
+
+    .loading p {
+      font-size: 1.2rem;
+      color: rgb(161 161 170);
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+      }
+
+      50% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root">
+    <div class="loading">
+      <img src="/logo.svg" alt="loading" />
+      <p>Loading...</p>
+    </div>
+  </div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

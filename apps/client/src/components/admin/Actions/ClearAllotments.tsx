@@ -51,7 +51,7 @@ const ClearAllotments = ({ building }: ClearAllotmentsProps) => {
       <AlertDialog open={openClearAlert} onOpenChange={setOpenClearAlert}>
         <AlertDialogTrigger asChild>
           <Button
-            className="w-full hover:bg-destructive text-destructive hover:text-destructive-foreground"
+            className="w-full hover:bg-red-600 hover:text-white transition-none"
             size="sm"
             variant="outline"
             disabled={clearAllotmentsLoading}
@@ -83,8 +83,8 @@ const ClearAllotments = ({ building }: ClearAllotmentsProps) => {
         </AlertDialogContent>
       </AlertDialog>
       <p className="text-xs text-muted-foreground">
-        <strong className="text-destructive">Irreversible Warning:</strong>{' '}
-        Clear all the allotments for the students in this building.{' '}
+        <strong className="text-red-600">Irreversible Warning:</strong> Clear
+        all the allotments for the students in this building.{' '}
       </p>
     </div>
   );

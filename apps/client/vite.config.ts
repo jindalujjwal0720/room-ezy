@@ -33,6 +33,12 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+        },
+      },
+    },
   },
 
   resolve: {

@@ -82,7 +82,7 @@ const ActionAuditLogs = () => {
         <TableBody>
           {isFetchingLogs ? (
             <TableRow>
-              <TableCell colSpan={3}>
+              <TableCell colSpan={4}>
                 <Loading show />
               </TableCell>
             </TableRow>

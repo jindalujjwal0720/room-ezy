@@ -1,5 +1,5 @@
 import { useRefreshMutation } from '../api/auth';
-import Loading from '../pages/Loading';
+import LoadingPage from '../pages/Loading';
 import { clearCredentials, setCredentials } from '../store/slices/auth';
 import { createContext, useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -41,7 +41,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider value={value}>
-      {isLoading ? <Loading /> : children}
+      {isLoading ? <LoadingPage /> : children}
     </AuthContext.Provider>
   );
 }
