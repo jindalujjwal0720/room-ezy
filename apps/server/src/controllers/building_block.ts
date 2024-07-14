@@ -8,11 +8,11 @@ import { RequestWithUser } from '../middlewares/auth';
 
 // models
 import BuildingCreator from '../models/Building';
-import BlockCreator from '../models/Block';
+import BlockCreator from '../models/BuildingBlock';
 import FloorCreator from '../models/Floor';
 import RoomCreator from '../models/Room';
 const Building = BuildingCreator(applicationDB);
-const Block = BlockCreator(applicationDB);
+const BuildingBlock = BlockCreator(applicationDB);
 const Floor = FloorCreator(applicationDB);
 const Room = RoomCreator(applicationDB);
 
@@ -29,7 +29,7 @@ class BlockController {
       const buildingId = req.query.building;
       if (!buildingId) throw new BadRequestError('Invalid building');
 
-      const blocks = await Block.find({ building: buildingId });
+      const blocks = await BuildingBlock.find({ building: buildingId });
       res.status(200).json({ blocks });
     } catch (err) {
       next(err);
@@ -45,8 +45,8 @@ class BlockController {
       const blockId = req.params.blockId;
       if (!blockId) throw new BadRequestError('Invalid block');
 
-      const block = await Block.findById(blockId);
-      if (!block) throw new NotFoundError('Block not found');
+      const block = await BuildingBlock.findById(blockId);
+      if (!block) throw new NotFoundError('BuildingBlock not found');
 
       res.status(200).json({ block });
     } catch (err) {
@@ -72,7 +72,7 @@ class BlockController {
         building: buildingId,
       }));
 
-      await Block.insertMany(blocks);
+      await BuildingBlock.insertMany(blocks);
       res.status(201).json({ message: 'Blocks created successfully' });
     } catch (err) {
       next(err);
@@ -88,8 +88,8 @@ class BlockController {
       const blockId = req.params.blockId;
       if (!blockId) throw new BadRequestError('Invalid block');
 
-      const block = await Block.findById(blockId);
-      if (!block) throw new NotFoundError('Block not found');
+      const block = await BuildingBlock.findById(blockId);
+      if (!block) throw new NotFoundError('BuildingBlock not found');
 
       let { name } = req.body;
 
@@ -99,7 +99,7 @@ class BlockController {
       block.name = name || block.name;
 
       await block.save();
-      res.status(200).json({ message: 'Block updated successfully' });
+      res.status(200).json({ message: 'BuildingBlock updated successfully' });
     } catch (err) {
       next(err);
     }
@@ -114,17 +114,17 @@ class BlockController {
       const blockId = req.params.blockId;
       if (!blockId) throw new BadRequestError('Invalid block');
 
-      const block = await Block.findById(blockId);
-      if (!block) throw new NotFoundError('Block not found');
+      const block = await BuildingBlock.findById(blockId);
+      if (!block) throw new NotFoundError('BuildingBlock not found');
 
       const floors = await Floor.find({ block: blockId }).select('_id');
       const floorIds = floors.map((floor) => floor._id);
 
       await Room.deleteMany({ floor: { $in: floorIds } });
       await Floor.deleteMany({ block: blockId });
-      await Block.findByIdAndDelete(blockId);
+      await BuildingBlock.findByIdAndDelete(blockId);
 
-      res.status(200).json({ message: 'Block deleted successfully' });
+      res.status(200).json({ message: 'BuildingBlock deleted successfully' });
     } catch (err) {
       next(err);
     }

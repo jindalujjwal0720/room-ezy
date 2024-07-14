@@ -1,5 +1,5 @@
 import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
+import { Button, buttonVariants } from '../../ui/button';
 import { Label } from '../../ui/label';
 import {
   useDeleteBlockMutation,
@@ -8,13 +8,25 @@ import {
 import { getErrorMessage } from '../../../utils/error';
 import { toast } from 'sonner';
 
-interface Block {
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../../ui/alert-dialog';
+
+interface BuildingBlock {
   _id: string;
   name: string;
 }
 
 type UpdateBlockProps = {
-  block: Block | null;
+  block: BuildingBlock | null;
   onDelete?: () => void;
 };
 
@@ -57,13 +69,13 @@ const UpdateBlockForm = ({ block, onDelete }: UpdateBlockProps) => {
 
   return (
     <form
-      className="text-sm p-4 ring-1 ring-muted rounded-md mt-2"
+      className="text-sm p-4 ring-1 ring-muted rounded-md"
       onSubmit={handleUpdateBlock}
     >
       <div className="flex flex-col gap-2">
-        <Label htmlFor="blockName">Block name</Label>
+        <Label htmlFor="blockName">BuildingBlock name</Label>
         <Input
-          placeholder="Block name"
+          placeholder="BuildingBlock name"
           name="blockName"
           id="blockName"
           type="text"
@@ -75,14 +87,53 @@ const UpdateBlockForm = ({ block, onDelete }: UpdateBlockProps) => {
         <Button disabled={updateBlockLoading} type="submit" size="sm">
           Update block
         </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleDeleteBlock}
-          disabled={deleteBlockLoading}
-        >
-          Delete block
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              size="sm"
+              disabled={deleteBlockLoading}
+              variant="destructive"
+            >
+              Delete block
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete BuildingBlock</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogDescription>
+              Are you sure you want to delete the block{' '}
+              <strong>{block?.name}</strong>?
+              <div className="text-sm text-muted-foreground mt-2">
+                This will:
+                <ul className="list-disc pl-8">
+                  <li>Delete all the floors in the block</li>
+                  <li>Delete all the rooms in the block</li>
+                  <li>
+                    <span className="text-red-500">Unallocate</span> all the
+                    students in the block
+                  </li>
+                </ul>
+              </div>
+            </AlertDialogDescription>
+            <AlertDialogFooter>
+              <AlertDialogAction
+                onClick={handleDeleteBlock}
+                className={buttonVariants({
+                  variant: 'destructive',
+                  size: 'sm',
+                })}
+              >
+                Delete
+              </AlertDialogAction>
+              <AlertDialogCancel
+                className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+              >
+                Cancel
+              </AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </form>
   );

@@ -1,19 +1,15 @@
 import {
+  useGetAllotedRoomForUserQuery,
   useGetRoomsQuery,
   useGetWantedRoomsQuery,
-  useUpdateRoomsWantedByUserMutation,
 } from '../../api/room';
 import { cn } from '../../lib/utils';
 
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '../ui/hover-card';
-import { Button } from '../ui/button';
-import { getErrorMessage } from '../../utils/error';
-import { toast } from 'sonner';
+
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import Loading from '../Loading';
+import PreviewRoomPopoverContent from './PreviewRoomPopoverContent';
 
 interface Floor {
   _id: string;
@@ -24,23 +20,35 @@ interface Floor {
   roomCapacity: number;
 }
 
+interface User {
+  _id: string;
+  name: string;
+  admissionNumber: string;
+}
+
+interface RoomMinimal {
+  _id: string;
+  index: number;
+  crowdRatio: number;
+}
+
 interface Room {
   _id: string;
   index: number;
   name: string;
   wantedByCount: number;
   capacity: number;
-  chance: number;
+  allotedTo: User[];
 }
 
 interface FloorPreviewProps {
   floor: Floor | null;
-  rooms?: Room[];
+  rooms?: RoomMinimal[];
   className?: string;
 }
 
 interface RoomProps {
-  room: Room;
+  room: RoomMinimal;
 }
 
 const COLORS = [
@@ -58,78 +66,51 @@ const COLORS = [
   '#CA2640dc',
 ];
 
-const getColorAccordingToPercentage = (percentage: number) => {
+const getColorAccordingToPercentage = (percentage: number, wanted: boolean) => {
+  if (wanted) {
+    return '#2563ebdc';
+  }
   let index = COLORS.length - Math.floor((percentage / 100) * COLORS.length);
   index = Math.max(0, Math.min(index, COLORS.length - 1));
   return COLORS[index];
 };
 
 const Room = ({ room }: RoomProps) => {
-  const { data: { rooms: wantedRooms = [] } = {} } = useGetWantedRoomsQuery({});
-  const [wantRoom, { isLoading: isWantingRoom }] =
-    useUpdateRoomsWantedByUserMutation();
+  const { data: { rooms: wantedRooms = [] } = {} } = useGetWantedRoomsQuery<{
+    data: { rooms: Room[]; maxWantsAllowed: number };
+  }>({});
+  const { data: { room: allocatedRoom } = {} } = useGetAllotedRoomForUserQuery<{
+    data: { room: Room };
+  }>({});
 
-  const handleRoomWant = async () => {
-    if (isWantingRoom) {
-      return;
-    }
-
-    try {
-      await wantRoom({
-        roomId: room._id,
-      }).unwrap();
-      toast.success('Room requested successfully.');
-    } catch (error) {
-      toast.error(getErrorMessage(error));
-    }
-  };
+  const isRoomWanted = wantedRooms.some(({ _id }) => _id === room._id);
+  const isAnyRoomAllocated = !!allocatedRoom;
+  const isThisRoomAllocated = allocatedRoom?._id === room._id;
 
   return (
-    <HoverCard>
-      <HoverCardTrigger asChild>
+    <Popover>
+      <PopoverTrigger>
         <div
           style={{
-            backgroundColor: getColorAccordingToPercentage(room.chance),
+            backgroundColor:
+              isAnyRoomAllocated && !isThisRoomAllocated
+                ? '' // skip colors in case the allocation is done
+                : getColorAccordingToPercentage(
+                    Math.floor(100 / (room.crowdRatio + 0.001)),
+                    isRoomWanted
+                  ),
           }}
-          className="size-10 bg-muted rounded-md flex items-center justify-center cursor-pointer hover:bg-muted-foreground hover:text-muted"
+          className={cn(
+            'size-10 bg-muted rounded-md flex items-center justify-center cursor-pointer hover:bg-muted-foreground hover:text-muted'
+          )}
         >
           {room.index}
         </div>
-      </HoverCardTrigger>
-      <HoverCardContent className="w-80">
-        <div className="flex justify-between space-x-4">
-          <div className="space-y-1">
-            <h4 className="text-sm font-semibold">Room {room.name}</h4>
-            <p className="text-sm">
-              <strong>{room.wantedByCount || 'No'}</strong> student(s) want this
-              room yet. Maximum capacity is {room.capacity}.
-            </p>
-            {wantedRooms.length > 0 ? (
-              <div className="pt-2 text-xs text-muted-foreground">
-                You have already requested a room. Please wait for the admin to
-                approve.
-              </div>
-            ) : (
-              <>
-                <div className="pt-2 text-xs text-muted-foreground">
-                  You have <strong>{room.chance}%</strong> chance of getting
-                  this room if you want it.
-                </div>
-                <div className="flex pt-2">
-                  <Button
-                    size="sm"
-                    onClick={handleRoomWant}
-                    disabled={isWantingRoom}
-                  >
-                    I want
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </HoverCardContent>
-    </HoverCard>
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <PreviewRoomPopoverContent roomId={room._id} />
+      </PopoverContent>
+    </Popover>
   );
 };
 
@@ -347,9 +328,16 @@ const componentsMap: {
 };
 
 const FloorPreview = ({ floor, className }: FloorPreviewProps) => {
-  const { data: { rooms = [] } = {} } = useGetRoomsQuery(floor?._id || '', {
-    skip: !floor || !floor._id,
-  });
+  const { data: { rooms = [] } = {}, isFetching: isFetchingRooms } =
+    useGetRoomsQuery(
+      {
+        floorId: floor?._id || '',
+        select: '_id,index',
+      },
+      {
+        skip: !floor || !floor._id,
+      }
+    );
   const PreviewComponent = componentsMap[floor?.mapType || 'linear'];
 
   if (!floor) {
@@ -365,12 +353,19 @@ const FloorPreview = ({ floor, className }: FloorPreviewProps) => {
   }
 
   return (
-    <ScrollArea className={cn('w-full', className)}>
-      <div className="w-max p-4">
-        <PreviewComponent floor={floor} rooms={rooms} />
-      </div>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+    <div className="flex flex-col gap-4">
+      <h2 className="font-semibold">Preview Floor: {floor.name}</h2>
+      <ScrollArea className={cn('w-full', className)}>
+        {isFetchingRooms ? (
+          <Loading show={true} />
+        ) : (
+          <div className="w-max p-4">
+            <PreviewComponent floor={floor} rooms={rooms} />
+          </div>
+        )}
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+    </div>
   );
 };
 

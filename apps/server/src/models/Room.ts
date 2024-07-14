@@ -23,6 +23,7 @@ const roomSchema = new mongoose.Schema(
       required: true,
       default: 1,
     },
+
     wantedBy: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: 'User',
@@ -35,8 +36,20 @@ const roomSchema = new mongoose.Schema(
     },
     chance: {
       type: Number,
-      required: true,
-      default: 100,
+    },
+
+    allotedTo: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
+      default: [],
+      select: false,
+    },
+
+    probableAllotedTo: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
+      default: [],
+      select: false,
     },
   },
   {
@@ -51,7 +64,13 @@ export type RoomDoc = mongoose.Document & {
   capacity: number;
   wantedBy: mongoose.Types.ObjectId[];
   wantedByCount: number;
-  chance: number;
+
+  // to be calculated in controller
+  chance?: number;
+
+  allotedTo: mongoose.Types.ObjectId[];
+
+  probableAllotedTo: mongoose.Types.ObjectId[];
 } & {
   createdAt: Date;
   updatedAt: Date;

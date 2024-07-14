@@ -5,7 +5,7 @@ const Sidebar = () => {
   const location = useLocation();
   const links = [
     {
-      name: 'Dashboard',
+      name: 'Actions',
       url: '/admin',
     },
     {
@@ -23,8 +23,8 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64">
-      <div className="flex flex-col p-4 gap-2">
+    <div className="w-full md:w-64">
+      <div className="flex md:flex-col p-4 gap-2">
         {links.map((link, index) => (
           <Link
             to={link.url}

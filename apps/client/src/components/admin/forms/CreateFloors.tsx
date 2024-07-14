@@ -12,13 +12,13 @@ import { useCreateMultipleFloorsMutation } from '../../../api/floor';
 import { getErrorMessage } from '../../../utils/error';
 import { toast } from 'sonner';
 
-interface Block {
+interface BuildingBlock {
   _id: string;
   name: string;
 }
 
 type CreateFloorsProps = {
-  block: Block | null;
+  block: BuildingBlock | null;
 };
 
 const mapTypes = [
@@ -61,7 +61,7 @@ const CreateFloorsForm = ({ block }: CreateFloorsProps) => {
 
   return (
     <form
-      className="text-sm p-4 ring-1 ring-muted rounded-md mt-2"
+      className="text-sm p-4 ring-1 ring-muted rounded-md"
       onSubmit={handleAddFloors}
     >
       <div className="flex flex-col gap-4">

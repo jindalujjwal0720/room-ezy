@@ -1,23 +1,23 @@
 import { Route, Routes } from 'react-router-dom';
 import Sidebar from '../components/admin/Sidebar';
 import Header from '../components/home/Header';
-import Buildings from '../components/admin/Buildings';
-import Blocks from '../components/admin/Blocks';
-import Floors from '../components/admin/Floors';
-import FloorPreview from '../components/home/FloorPreview';
+import BuildingsPage from './admin/Buildings';
+import BlocksPage from './admin/Blocks';
+import FloorsPage from './admin/Floors';
+import ActionsPage from './admin/Actions';
 
 const Admin = () => {
   return (
     <div className="flex flex-col">
       <Header />
-      <div className="flex">
+      <div className="flex flex-col md:flex-row">
         <Sidebar />
         <div className="flex-1">
           <Routes>
-            <Route path="/" element={<FloorPreview floor={null} />} />
-            <Route path="buildings" element={<Buildings />} />
-            <Route path="blocks" element={<Blocks />} />
-            <Route path="floors" element={<Floors />} />
+            <Route path="/" element={<ActionsPage />} />
+            <Route path="buildings" element={<BuildingsPage />} />
+            <Route path="blocks" element={<BlocksPage />} />
+            <Route path="floors" element={<FloorsPage />} />
           </Routes>
         </div>
       </div>

@@ -136,7 +136,7 @@ class AuthController {
 
       // converting to strings for safe query
       name = name?.toString();
-      admissionNumber = admissionNumber?.toString();
+      admissionNumber = admissionNumber?.toString().toUpperCase();
 
       user.name = name || user.name;
       user.admissionNumber = admissionNumber || user.admissionNumber;

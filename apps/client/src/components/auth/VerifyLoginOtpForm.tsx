@@ -10,17 +10,28 @@ import {
 } from '../ui/card';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '../ui/input-otp';
 
-import { useLoginMutation } from '../../api/auth';
+import { useLoginMutation, useSendLoginOTPMutation } from '../../api/auth';
 
 import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '../../store/slices/auth';
 import { getErrorMessage } from '../../utils/error';
+import { useTimer } from '../../hooks/useTimer';
+import { useEffect, useState } from 'react';
 
 export function VerifyLoginOtpForm() {
   const [login, { isLoading }] = useLoginMutation();
+  const [sendLoginOTP] = useSendLoginOTPMutation();
   const dispatch = useDispatch();
   const location = useLocation();
+  const [numberOfRequests, setNumberOfRequests] = useState(0);
+  const { time: timeLeft, start: startTimer, reset: resetTimer } = useTimer(60);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      startTimer();
+    }
+  }, [timeLeft, startTimer]);
 
   const email = location.state?.email as string;
 
@@ -48,6 +59,34 @@ export function VerifyLoginOtpForm() {
     } catch (error: unknown) {
       const message = getErrorMessage(error);
       toast.error(message);
+    }
+  };
+
+  const handleResendOTP = async (e: React.MouseEvent<HTMLSpanElement>) => {
+    e.preventDefault();
+
+    if (numberOfRequests >= 3) {
+      toast.error(
+        'There might be an issue with your email. Please contact support'
+      );
+      return;
+    }
+
+    if (timeLeft > 0) {
+      toast.error('Please wait before requesting another OTP');
+      return;
+    }
+
+    resetTimer((numberOfRequests + 1) * 60);
+    setNumberOfRequests((prev) => prev + 1);
+    startTimer();
+
+    try {
+      const payload = await sendLoginOTP({ email }).unwrap();
+      toast.success(payload.message);
+    } catch (error: unknown) {
+      resetTimer(0);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -79,10 +118,19 @@ export function VerifyLoginOtpForm() {
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
+          Didn't receive the OTP?{' '}
+          <span
+            onClick={handleResendOTP}
+            className="text-blue-600 hover:underline cursor-pointer"
+          >
+            {timeLeft > 0 ? `Resend OTP in ${timeLeft}s` : 'Resend OTP'}
+          </span>
+        </div>
+        <div className="mt-4 text-center text-sm">
           Need help logging?{' '}
           <Link
             to={`mailto:${import.meta.env.VITE_SUPPORT_EMAIL}`}
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline cursor-pointer"
           >
             Contact support
           </Link>

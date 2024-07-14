@@ -1,4 +1,4 @@
-import { Moon, Sun, SunMoon } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 
 import { Button } from './ui/button';
 
@@ -6,7 +6,7 @@ import { Theme, useTheme } from '../providers/ThemeProvider';
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
-  const themeOptions: Theme[] = ['light', 'dark', 'system'];
+  const themeOptions: Theme[] = ['light', 'dark'];
 
   return (
     <Button
@@ -20,10 +20,8 @@ const ThemeToggle = () => {
     >
       {theme === 'light' ? (
         <Sun size={20} />
-      ) : theme === 'dark' ? (
-        <Moon size={20} />
       ) : (
-        <SunMoon size={20} />
+        <Moon size={20} />
       )}
     </Button>
   );

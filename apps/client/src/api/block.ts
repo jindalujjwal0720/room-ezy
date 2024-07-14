@@ -4,11 +4,11 @@ const blocksApi = api.injectEndpoints({
   endpoints: (blocks) => ({
     getBlocks: blocks.query({
       query: (buildingId) => `/v1/blocks?building=${buildingId}`,
-      providesTags: ['Block'],
+      providesTags: ['BuildingBlock'],
     }),
     getBlock: blocks.query({
       query: (id) => `/v1/blocks/${id}`,
-      providesTags: ['Block'],
+      providesTags: ['BuildingBlock'],
     }),
     createMultipleBlocks: blocks.mutation({
       query: ({ buildingId, count }) => ({
@@ -16,7 +16,7 @@ const blocksApi = api.injectEndpoints({
         method: 'POST',
         body: { buildingId, count },
       }),
-      invalidatesTags: ['Block'],
+      invalidatesTags: ['BuildingBlock'],
     }),
     updateBlock: blocks.mutation({
       query: ({ id, block }) => ({
@@ -24,14 +24,14 @@ const blocksApi = api.injectEndpoints({
         method: 'PATCH',
         body: block,
       }),
-      invalidatesTags: ['Block'],
+      invalidatesTags: ['BuildingBlock'],
     }),
     deleteBlock: blocks.mutation({
       query: ({ id }) => ({
         url: `/v1/blocks/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Block', 'Floor'],
+      invalidatesTags: ['BuildingBlock', 'Floor'],
     }),
   }),
 });

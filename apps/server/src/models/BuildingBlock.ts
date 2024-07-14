@@ -19,7 +19,7 @@ const blockSchema = new mongoose.Schema(
   }
 );
 
-export type BlockDoc = mongoose.Document & {
+export type BuildingBlockDoc = mongoose.Document & {
   building: mongoose.Types.ObjectId;
   name: string;
 } & {
@@ -27,11 +27,11 @@ export type BlockDoc = mongoose.Document & {
   updatedAt: Date;
 };
 
-export default (db: mongoose.Connection): mongoose.Model<BlockDoc> => {
-  if (!db.models.Block)
+export default (db: mongoose.Connection): mongoose.Model<BuildingBlockDoc> => {
+  if (!db.models.BuildingBlock)
     return db.model(
-      'Block',
+      'BuildingBlock',
       blockSchema
-    ) as unknown as mongoose.Model<BlockDoc>;
-  return db.models.Block;
+    ) as unknown as mongoose.Model<BuildingBlockDoc>;
+  return db.models.BuildingBlock;
 };

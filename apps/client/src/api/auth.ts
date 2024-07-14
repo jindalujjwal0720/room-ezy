@@ -11,12 +11,14 @@ const authApi = api.injectEndpoints({
           otp,
         },
       }),
+      invalidatesTags: ['User'],
     }),
     logout: builder.mutation({
       query: () => ({
         url: '/v1/auth/logout',
         method: 'GET',
       }),
+      invalidatesTags: ['User', 'Building', 'BuildingBlock', 'Floor', 'Room'],
     }),
     refresh: builder.mutation({
       query: () => ({
@@ -42,12 +44,14 @@ const authApi = api.injectEndpoints({
           admissionNumber,
         },
       }),
+      invalidatesTags: ['User'],
     }),
     me: builder.query({
       query: () => ({
         url: '/v1/auth/me',
         method: 'GET',
       }),
+      providesTags: ['User'],
     }),
   }),
 });

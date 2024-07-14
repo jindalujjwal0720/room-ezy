@@ -11,16 +11,24 @@ import {
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 
-import { useUpdateUserMutation } from '../../api/auth';
+import { useMeQuery, useUpdateUserMutation } from '../../api/auth';
 
 import { toast } from 'sonner';
 import { getErrorMessage } from '../../utils/error';
-import { selectUser, setUser } from '../../store/slices/auth';
-import { useSelector } from 'react-redux';
+import { selectIsProfileUpdated, setUser } from '../../store/slices/auth';
+import { useDispatch, useSelector } from 'react-redux';
+
+interface User {
+  _id: string;
+  name: string;
+  admissionNumber: string;
+}
 
 export function UpdateUserForm() {
-  const user = useSelector(selectUser);
+  const { data: { user } = {} } = useMeQuery<{ data: { user: User } }>({});
   const [updateUser, { isLoading }] = useUpdateUserMutation();
+  const dispatch = useDispatch();
+  const isProfileUpdated = useSelector(selectIsProfileUpdated);
   const navigate = useNavigate();
 
   const handleLoginFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,12 +41,16 @@ export function UpdateUserForm() {
     try {
       const payload = await updateUser({ name, admissionNumber }).unwrap();
       toast.success(payload.message);
-      setUser(payload.user);
-      navigate('/');
+      dispatch(setUser(payload.user));
     } catch (error: unknown) {
       const message = getErrorMessage(error);
       toast.error(message);
     }
+  };
+
+  const handleNavigateToHome = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    navigate('/');
   };
 
   return (
@@ -77,10 +89,26 @@ export function UpdateUserForm() {
             This information is required to verify your identity. It is your
             responsibility to provide the correct information.
           </p>
-          <Button type="submit" className="w-full mt-4" disabled={isLoading}>
+          <Button
+            size="sm"
+            type="submit"
+            className="w-full mt-4"
+            disabled={isLoading}
+          >
             {isLoading ? 'Updating...' : 'Update Profile'}
           </Button>
         </form>
+        {isProfileUpdated && (
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={isLoading}
+            onClick={handleNavigateToHome}
+            className="mt-4 w-full"
+          >
+            Continue to Home
+          </Button>
+        )}
         <div className="mt-4 text-center text-sm">
           Need help logging?{' '}
           <Link

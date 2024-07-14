@@ -4,7 +4,7 @@ const floorSchema = new mongoose.Schema(
   {
     block: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Block',
+      ref: 'BuildingBlock',
       required: true,
     },
     name: {

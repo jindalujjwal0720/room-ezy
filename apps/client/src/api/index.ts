@@ -45,9 +45,10 @@ const api = createApi({
     // ...tagTypes
     'User',
     'Building',
-    'Block',
+    'BuildingBlock',
     'Floor',
     'Room',
+    'ActionAuditLog',
   ],
 });
 

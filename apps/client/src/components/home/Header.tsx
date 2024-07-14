@@ -1,29 +1,16 @@
 import { Link, useLocation } from 'react-router-dom';
-import {
-  clearCredentials,
-  selectIsAdmin,
-  selectUser,
-} from '../../store/slices/auth';
-import { useDispatch, useSelector } from 'react-redux';
+import { selectIsAdmin } from '../../store/slices/auth';
+import { useSelector } from 'react-redux';
 import ThemeToggle from '../ThemeToggle';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '../ui/hover-card';
-import { Button } from '../ui/button';
-import { useLogoutMutation } from '../../api/auth';
-import { toast } from 'sonner';
-import { getErrorMessage } from '../../utils/error';
-import { useGetWantedRoomsQuery } from '../../api/room';
+import { useMeQuery } from '../../api/auth';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import RoomEzyLogo from '../../assets/room-ezy.svg';
+import HeaderProfilePopoverContent from './HeaderProfilePopoverContent';
 
-interface Room {
+interface User {
   _id: string;
-  index: number;
   name: string;
-  wantedByCount: number;
-  capacity: number;
-  chance: number;
+  admissionNumber: string;
 }
 
 const getInitials = (name: string) => {
@@ -34,30 +21,20 @@ const getInitials = (name: string) => {
 const Header = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.includes('/admin');
-  const user = useSelector(selectUser);
   const isAdmin = useSelector(selectIsAdmin);
-
-  const { data: { rooms = [] } = {} } = useGetWantedRoomsQuery<{
-    data: { rooms: Room[] };
+  const { data: { user } = {} } = useMeQuery<{
+    data: { user: User };
   }>({});
-
-  const [logout] = useLogoutMutation();
-  const dispatch = useDispatch();
-
-  const handleLogout = async () => {
-    try {
-      await logout({}).unwrap();
-      dispatch(clearCredentials());
-    } catch (err) {
-      toast.error(getErrorMessage(err));
-    }
-  };
 
   return (
     <header className="sticky top-0 z-10 backdrop-blur-md bg-muted/10 border-b border-muted">
-      <div className="flex justify-between px-6 py-2">
+      <div className="flex items-center justify-between px-6 py-2">
         <div>
-          <Link to="/" className="text-lg font-semibold text-primary">
+          <Link
+            to="/"
+            className="text-lg font-semibold text-primary flex gap-2 items-center"
+          >
+            <img src={RoomEzyLogo} alt="RoomEzy Logo" className="w-8 h-8" />
             RoomEzy
           </Link>
         </div>
@@ -65,24 +42,23 @@ const Header = () => {
           {!isAdminRoute && isAdmin && (
             <Link
               to="/admin"
-              className="text-sm text-muted-foreground hover:bg-muted p-2 rounded"
+              className="text-sm text-muted-foreground hover:bg-muted p-2 rounded hidden md:block"
             >
               Admin Panel
             </Link>
           )}
-          {isAdminRoute && (
+          {isAdminRoute && isAdmin && (
             <Link
               to="/"
-              className="text-sm text-muted-foreground hover:bg-muted p-2 rounded"
+              className="text-sm text-muted-foreground hover:bg-muted p-2 rounded hidden md:block"
             >
               Home
             </Link>
           )}
           <ThemeToggle />
-
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <div className="flex items-center justify-end gap-3 cursor-pointer">
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="flex items-center justify-end gap-3 cursor-pointer py-1 px-2 hover:bg-muted rounded-md">
                 <div className="text-xs bg-primary text-white p-2 rounded-full">
                   {getInitials(user?.name || '')}
                 </div>
@@ -93,37 +69,11 @@ const Header = () => {
                   </span>
                 </div>
               </div>
-            </HoverCardTrigger>
-            <HoverCardContent className="p-2">
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm font-semibold">Wanted Rooms</span>
-                  {rooms.length > 0 ? (
-                    rooms.map((room) => (
-                      <div key={room._id} className="flex items-center gap-2">
-                        <span className="text-sm text-primary">
-                          {room.name}
-                        </span>
-                        <span className="text-sm text-muted-foreground">
-                          {room.wantedByCount}/{room.capacity} ({room.chance}%
-                          chance)
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <span className="text-sm text-muted-foreground">
-                      No rooms wanted yet
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Button variant="ghost" size="sm" onClick={handleLogout}>
-                    Log out
-                  </Button>
-                </div>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
+            </PopoverTrigger>
+            <PopoverContent className="p-3 m-2">
+              <HeaderProfilePopoverContent />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </header>

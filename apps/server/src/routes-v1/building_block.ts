@@ -3,7 +3,7 @@ const router = express.Router();
 
 import { RequestWithUser, requireAdmin, requireAuth } from '../middlewares/auth';
 
-import BlockController from '../controllers/block';
+import BlockController from '../controllers/building_block';
 
 router.get(
   '/',

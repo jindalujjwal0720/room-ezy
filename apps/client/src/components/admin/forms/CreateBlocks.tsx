@@ -37,7 +37,7 @@ const CreateBlocksForm = ({ building }: UpdateBlockProps) => {
 
   return (
     <form
-      className="text-sm p-4 ring-1 ring-muted rounded-md mt-2"
+      className="text-sm p-4 ring-1 ring-muted rounded-md"
       onSubmit={handleAddBlocks}
     >
       <div className="flex flex-col gap-2">

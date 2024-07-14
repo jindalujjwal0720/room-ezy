@@ -1,5 +1,5 @@
 import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
+import { Button, buttonVariants } from '../../ui/button';
 import { Label } from '../../ui/label';
 import {
   useDeleteBuildingMutation,
@@ -7,6 +7,18 @@ import {
 } from '../../../api/building';
 import { toast } from 'sonner';
 import { getErrorMessage } from '../../../utils/error';
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../../ui/alert-dialog';
 
 interface Building {
   _id: string;
@@ -59,7 +71,7 @@ const UpdateBuildingForm = ({ building, onDelete }: UpdateBuildingProps) => {
 
   return (
     <form
-      className="text-sm p-4 ring-1 ring-muted rounded-md mt-2"
+      className="text-sm p-4 ring-1 ring-muted rounded-md"
       onSubmit={handleUpdateBuilding}
     >
       <div className="flex flex-col gap-2">
@@ -77,14 +89,54 @@ const UpdateBuildingForm = ({ building, onDelete }: UpdateBuildingProps) => {
         <Button type="submit" size="sm" disabled={updateBuildingLoading}>
           Update building
         </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleDeleteBuilding}
-          disabled={deleteBuildingLoading}
-        >
-          Delete building
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              size="sm"
+              disabled={deleteBuildingLoading}
+              variant="destructive"
+            >
+              Delete building
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Building</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogDescription>
+              Are you sure you want to delete the building{' '}
+              <strong>{building?.name}</strong>?
+              <div className="text-sm text-muted-foreground mt-2">
+                This will:
+                <ul className="list-disc pl-8">
+                  <li>Delete all the blocks in the building</li>
+                  <li>Delete all the floors in the building</li>
+                  <li>Delete all the rooms in the building</li>
+                  <li>
+                    <span className="text-red-500">Unallocate</span> all the
+                    students in the building
+                  </li>
+                </ul>
+              </div>
+            </AlertDialogDescription>
+            <AlertDialogFooter>
+              <AlertDialogAction
+                onClick={handleDeleteBuilding}
+                className={buttonVariants({
+                  variant: 'destructive',
+                  size: 'sm',
+                })}
+              >
+                Delete
+              </AlertDialogAction>
+              <AlertDialogCancel
+                className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+              >
+                Cancel
+              </AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </form>
   );

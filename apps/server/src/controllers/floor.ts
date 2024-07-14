@@ -8,11 +8,11 @@ import { RequestWithUser } from '../middlewares/auth';
 
 // models
 import BuildingCreator from '../models/Building';
-import BlockCreator from '../models/Block';
+import BlockCreator from '../models/BuildingBlock';
 import FloorCreator from '../models/Floor';
 import RoomCreator from '../models/Room';
 const Building = BuildingCreator(applicationDB);
-const Block = BlockCreator(applicationDB);
+const BuildingBlock = BlockCreator(applicationDB);
 const Floor = FloorCreator(applicationDB);
 const Room = RoomCreator(applicationDB);
 
@@ -74,8 +74,8 @@ class FloorController {
       namingConvention =
         namingConvention?.toString() || '{block}-{floor}-{room}';
 
-      const block = await Block.findById(blockId);
-      if (!block) throw new NotFoundError('Block not found');
+      const block = await BuildingBlock.findById(blockId);
+      if (!block) throw new NotFoundError('BuildingBlock not found');
 
       const building = await Building.findById(block.building);
       if (!building) throw new NotFoundError('Building not found');
@@ -145,7 +145,7 @@ class FloorController {
       floor.mapType = mapType || floor.mapType;
       floor.name = name || floor.name;
 
-      const block = await Block.findById(floor.block);
+      const block = await BuildingBlock.findById(floor.block);
       const building = await Building.findById(block?.building);
       if (!building || !block) {
         throw new NotFoundError('Building or block not found');

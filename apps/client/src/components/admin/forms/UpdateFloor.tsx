@@ -1,5 +1,5 @@
 import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
+import { Button, buttonVariants } from '../../ui/button';
 import { Label } from '../../ui/label';
 import {
   Select,
@@ -14,6 +14,18 @@ import {
 } from '../../../api/floor';
 import { getErrorMessage } from '../../../utils/error';
 import { toast } from 'sonner';
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../../ui/alert-dialog';
 
 interface Floor {
   _id: string;
@@ -86,7 +98,7 @@ const UpdateFloorForm = ({ floor, onDelete }: UpdateFloorProps) => {
 
   return (
     <form
-      className="text-sm p-4 ring-1 ring-muted rounded-md mt-2"
+      className="text-sm p-4 ring-1 ring-muted rounded-md"
       onSubmit={handleUpdateFloor}
     >
       <div className="flex flex-col gap-4">
@@ -172,14 +184,52 @@ const UpdateFloorForm = ({ floor, onDelete }: UpdateFloorProps) => {
         <Button disabled={updateFloorLoading} size="sm">
           Update Floor
         </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleDeleteFloor}
-          disabled={deleteFloorLoading}
-        >
-          Delete Floor
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              size="sm"
+              disabled={deleteFloorLoading}
+              variant="destructive"
+            >
+              Delete Floor
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Floor</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogDescription>
+              Are you sure you want to delete the floor{' '}
+              <strong>{floor?.name}</strong>?
+              <div className="text-sm text-muted-foreground mt-2">
+                This will:
+                <ul className="list-disc pl-8">
+                  <li>Delete all the rooms in the floor</li>
+                  <li>
+                    <span className="text-red-500">Unallocate</span> all the
+                    students in the block
+                  </li>
+                </ul>
+              </div>
+            </AlertDialogDescription>
+            <AlertDialogFooter>
+              <AlertDialogAction
+                onClick={handleDeleteFloor}
+                className={buttonVariants({
+                  variant: 'destructive',
+                  size: 'sm',
+                })}
+              >
+                Delete
+              </AlertDialogAction>
+              <AlertDialogCancel
+                className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+              >
+                Cancel
+              </AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </form>
   );

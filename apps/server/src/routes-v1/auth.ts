@@ -3,8 +3,9 @@ const router = express.Router();
 
 import AuthController from '../controllers/auth';
 import { RequestWithUser, requireAuth } from '../middlewares/auth';
+import { otpRateLimiter } from '../utils/rate-limit';
 
-router.post('/send-login-otp', AuthController.sendLoginOTP);
+router.post('/send-login-otp', otpRateLimiter, AuthController.sendLoginOTP);
 router.post('/login', AuthController.login);
 router.patch(
   '/update-user',

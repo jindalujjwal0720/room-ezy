@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import AuthRoutes from './authRoutes';
 import RequireLoggedIn from './custom/RequireLoggedIn';
-import RequireUpdatedUser from './custom/RequiredUpdatedUser';
+import RequireUpdatedUser from './custom/RequireUpdatedUser';
 import UpdateUser from '../pages/auth/UpdateUser';
 import Home from '../pages/Home';
 import RequireAdmin from './custom/RequireAdmin';

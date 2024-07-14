@@ -4,9 +4,10 @@ import cors from 'cors';
 
 import AuthRoutes from './auth';
 import BuildingRoutes from './building';
-import BlockRoutes from './block';
+import BlockRoutes from './building_block';
 import FloorRoutes from './floor';
 import RoomRoutes from './room';
+import LogsRoutes from './logs';
 
 // cors
 router.use(
@@ -21,5 +22,6 @@ router.use('/buildings', BuildingRoutes);
 router.use('/blocks', BlockRoutes);
 router.use('/floors', FloorRoutes);
 router.use('/rooms', RoomRoutes);
+router.use('/logs', LogsRoutes);
 
 export default router;

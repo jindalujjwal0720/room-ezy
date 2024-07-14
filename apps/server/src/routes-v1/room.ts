@@ -15,6 +15,21 @@ router.get(
   requireAuth as unknown as RequestHandler<RequestWithUser>,
   RoomController.getRoomsWantedByUser as unknown as RequestHandler<RequestWithUser>
 );
+router.get(
+  '/probable',
+  requireAuth as unknown as RequestHandler<RequestWithUser>,
+  RoomController.getProbableRoomsForUser as unknown as RequestHandler<RequestWithUser>
+);
+router.get(
+  '/allotment',
+  requireAuth as unknown as RequestHandler<RequestWithUser>,
+  RoomController.getAllotedRoomForUser as unknown as RequestHandler<RequestWithUser>
+);
+router.get(
+  '/:roomId',
+  requireAuth as unknown as RequestHandler<RequestWithUser>,
+  RoomController.getRoomById as unknown as RequestHandler<RequestWithUser>
+);
 router.post(
   '/:roomId/wanted',
   requireAuth as unknown as RequestHandler<RequestWithUser>,
