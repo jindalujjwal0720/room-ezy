@@ -31,7 +31,7 @@ class AuthController {
       let { email } = req.body;
 
       // converting to strings for safe query
-      email = email?.toString()?.toLowerCase();
+      email = email?.toString()?.trim().toLowerCase();
 
       // validations
       if (!email || !validator.isEmail(email)) {
